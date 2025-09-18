@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { hotelData } from "@/hotelcomponents/hotels";
-import { motion } from "framer-motion";
+
 
 // This is the function you need to add
 export async function generateStaticParams() {
