@@ -5,13 +5,13 @@ import Image from "next/image";
 import { hotelData } from "@/hotelcomponents/hotels";
 
 // This is the function you need to add
-export async function generateStaticParams() {
+exports.generateStaticParams = async function generateStaticParams() {
 	return hotelData.map((hotel) => ({
 		id: hotel.id,
 	}));
-}
+};
 
-export default function HotelDetailPage({ params }) {
+exports.default = function HotelDetailPage({ params }) {
 	const { id } = params;
 	const hotel = hotelData.find((h) => h.id === id);
 
