@@ -4,7 +4,6 @@ import React from "react";
 import Image from "next/image";
 import { hotelData } from "@/hotelcomponents/hotels";
 
-
 // This is the function you need to add
 export async function generateStaticParams() {
 	return hotelData.map((hotel) => ({
