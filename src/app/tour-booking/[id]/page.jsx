@@ -1,13 +1,21 @@
-"use client"
+//'use client'
 
-import React from "react";
-import Image from "next/image";
-import { tourData } from "@/tourcomponents/tours";
-import { motion } from "framer-motion";
-import { FaMapPin } from "react-icons/fa";
-import Link from "next/link";
+const React = require("react");
+const Image = require("next/image");
+const { tourData } = require("@/tourcomponents/tours");
+const { motion } = require("framer-motion");
+const { FaMapPin } = require("react-icons/fa");
+const Link = require("next/link");
 
-export default async function TourDetailPage({ params }) {
+// This function is still async, and is a named export under the CommonJS system
+exports.generateStaticParams = async function generateStaticParams() {
+	return tourData.map((tour) => ({
+		id: tour.id,
+	}));
+};
+
+// This is a default export under the CommonJS system
+exports.default = async function TourDetailPage({ params }) {
 	// Await the params object to resolve the dynamic route ID.
 	const { id } = await params;
 	const tour = tourData.find((t) => t.id === id);
@@ -86,4 +94,4 @@ export default async function TourDetailPage({ params }) {
 			</main>
 		</div>
 	);
-}
+};
