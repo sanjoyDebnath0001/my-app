@@ -85,13 +85,13 @@ export default function Footer() {
 				{/* Newsletter */}
 				<div>
 					<h3 className="text-lg font-semibold mb-4">Newsletter</h3>
-					<div className="flex flex-col sm:flex-row gap-2">
+					<div className="flex flex-col sm:flex-row gap-0">
 						<input
 							type="email"
 							placeholder="Your E-mail Address"
 							className="px-4 py-2 w-full sm:w-auto rounded-md bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-500 text-sm"
 						/>
-						<button className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300 text-sm">
+						<button className="px-1 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300 text-sm">
 							<Link href="/login" className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300 text-sm">
 								SUBSCRIBE
 							</Link>

@@ -2,25 +2,26 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function Download(){
+export default function Download() {
 	return (
 		<div className="relative h-screen overflow-hidden bg-black">
-			<Image
-				src="/background-city.jpg"
-				alt="City skyline background"
-				fill
-				priority
-				className="object-cover"
-			/>
-			<div className="absolute inset-0 bg-black/50"></div>
-
-			
-			<div className="relative z-10 flex h-full flex-col items-center justify-center p-8 text-white lg:items-start lg:p-20">
-				<div className="max-w-xl space-y-4">
+			{/* Background Image Section */}
+			<div className="absolute inset-0 z-0">
+				<Image
+					src="/background-city.jpg"
+					alt="City skyline background"
+					fill
+					priority
+					className="object-cover"
+				/>
+				<div className="absolute inset-0 bg-black/50"></div>
+			</div>
+			<div className="relative z-10 flex flex-col items-left justify-center p-8 text-white lg:p-20 min-h-[calc(100vh-12rem)]">
+				<div className="max-w-xl space-y-5 lg:pr-0">
 					<span className="font-semibold uppercase tracking-widest text-gray-300">
 						Get Our App
 					</span>
-					<h1 className="text-4xl font-bold lg:text-6xl">
+					<h1 className=" font-bold lg:text-6xl">
 						Smart Travel Starts With Our App
 					</h1>
 					<p className="text-gray-300">
@@ -28,8 +29,6 @@ export default function Download(){
 						fringilla eu. Accumsan vulputate sit placerat enim present sita
 						ultricies dignissim et.
 					</p>
-
-					{/* App Store Buttons */}
 					<div className="mt-8 flex flex-wrap gap-4">
 						<a href="#" aria-label="Download on the Google Play Store">
 							<Image
@@ -51,30 +50,26 @@ export default function Download(){
 				</div>
 			</div>
 
-			{/* Phone Mockups with animation */}
-			<div className="absolute bottom-0 right-0 z-10 hidden lg:block">
-				<div className="relative h-[600px] w-[500px]">
-
-					{/* Phone 2 (foreground) */}
-					<motion.div
-						className="absolute right-40 top-1/2 -translate-y-1/2 transform mask-b-from-80% mask-radial-[40%_50%] mask-radial-from-80%"
-						animate={{ y: [0, 20, 0] }}
-						transition={{
-							duration: 5,
-							repeat: Infinity,
-							ease: "easeInOut",
+			{/* Phone Mockup Section */}
+			<div className="absolute bottom-40 right-10 z-200 lg:block">
+				<div className="relative h-[1000px] w-[800px]">
+					<Image
+						src="/phone-mockup-1.png"
+						alt="App mockup screen foreground"
+						width={800}
+						height={1000}
+						className="absolute bottom-0 right-0 drop-shadow-2xl"
+						style={{ 
+							bottom: '-200px', 
 						}}
-					>
-						<Image
-							src="/phone-mockup-2.png"
-							alt="App mockup screen foreground"
-							width={300}
-							height={600}
-							className="drop-shadow-2xl"
-						/>
-					</motion.div>
+					/>
+				</div>
+			</div>
+
+			<div className="absolute bottom-0 left-0 right-0 z-30 flex items-center justify-center lg:h-48">
+				<div className="w-full h-full bg-white text-black p-8 flex flex-col justify-center items-center text-center">
 				</div>
 			</div>
 		</div>
 	);
-};
+}

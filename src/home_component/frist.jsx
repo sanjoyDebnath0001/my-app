@@ -16,7 +16,7 @@ export default function Frist() {
 
 	// Image data for the slideshow
 	const images = [
-		{ src: '/images.jpg', alt: 'A serene mountain lake' }, 
+		{ src: '/images.jpg', alt: 'A serene mountain lake' },
 		{ src: '/image2.jpg', alt: 'Sunrise over a tropical beach' },
 		{ src: '/image3.jpg', alt: 'A vibrant city street at night' },
 	];
@@ -32,8 +32,8 @@ export default function Frist() {
 
 	return (
 		<div className="min-h-screen flex flex-col font-sans text-white bg-gray-900">
-			{/* Main Hero Section */}
-			<div className="relative h-screen flex justify-center p-4">
+			{/* Main Hero Section - Now full screen */}
+			<div className="relative h-screen w-full flex items-center justify-center p-0">
 
 				{/* Image Slideshow as the Background */}
 				<div className="absolute inset-0 z-0 overflow-hidden">
@@ -42,41 +42,40 @@ export default function Frist() {
 							key={index}
 							src={img.src}
 							alt={img.alt}
-							layout="fill"
-							objectFit="cover"
+							fill
 							priority={index === 0}
-							className={`transition-opacity duration-2000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'
+							className={`transition-opacity duration-2000 ease-in-out object-cover ${index === currentIndex ? 'opacity-100' : 'opacity-0'
 								}`}
 						/>
 					))}
 				</div>
 
 				{/* Dark overlay with a higher z-index to sit on top of the slideshow */}
-				<div className="absolute inset-0 bg-gradient-to-t from-black/50 to-black/30 z-10"></div>
+				<div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/40 z-10"></div>
 
 				{/* Hero Content with a higher z-index */}
-				<div className=" mt-40 relative z-20 text-left max-w-5xl mx-auto px-4">
-					
+				<div className="relative z-20 text-left w-full max-w-6xl px-4 md:px-8 flex flex-col justify-center">
+
 					<p className="text-sm sm:text-lg tracking-widest uppercase mb-4">
 						WELCOME TO GHAR BASAI
 					</p>
 					<h1 className="text-4xl sm:text-6xl md:text-7xl font-bold leading-tight mb-6">
 						Discover the World, One Journey at a Time
 					</h1>
-					<p className="text-sm sm:text-base md:text-lg max-w-3xl  mb-10 text-gray-200">
+					<p className="text-sm sm:text-base md:text-lg max-w-3xl mb-10 text-gray-200">
 						Lorem ipsum dolor sit amet consectetur. Fermentum nunc proin netus cursus non. Enim
 						porttitor pretium augue elit in tristique. Nisl arcu sagittis habitant suscipit nunc
 						fames donec sit. Ut faucibus risus fringilla tristique sit a.
-						</p>
+					</p>
 
-					
+
 					<div className="bg-white/20 backdrop-blur-md rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
 						<div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 							{/* Location */}
 							<div className="relative">
 								<MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-white" size={20} />
 								<input
-									type="text" 
+									type="text"
 									placeholder="Where to?"
 									className="w-full bg-white/30 text-white rounded-lg pl-10 pr-4 py-3 placeholder-white focus:outline-none focus:ring-2 focus:ring-white/50"
 									value={location}
@@ -131,7 +130,7 @@ export default function Frist() {
 				</div>
 
 				{/* Video Thumbnail */}
-				<div className="absolute bottom-16 right-8 z-20">
+				<div className="absolute bottom-8 right-8 z-20">
 					<div className="relative w-40 h-24 rounded-2xl overflow-hidden shadow-lg border-2 border-white/30 cursor-pointer group">
 						<Image
 							src="/video.jpg"
@@ -150,7 +149,7 @@ export default function Frist() {
 				</div>
 			</div>
 
-			
+
 			{/* Moving City Banner */}
 			<div className="relative overflow-hidden bg-blue-800 w-full p-4 sm:p-6 text-sm text-center tracking-widest uppercase">
 				<motion.div
@@ -158,7 +157,7 @@ export default function Frist() {
 					animate={{ x: ['0%', '-100%'] }}
 					transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
 				>
-					
+
 					{[...cities, ...cities].map((city, index) => (
 						<div key={index} className="flex items-center gap-2 px-4">
 							<motion.span
