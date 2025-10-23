@@ -117,20 +117,54 @@ const LoginForm = ({ toggleForm }) => {
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState('');
+	const [loading, setLoading] = useState(false);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		setError('');
+		setLoading(true);
 
-		// Client-side validation
 		if (!email || !password) {
 			setError('Please fill out all fields.');
+			setLoading(false);
 			return;
 		}
 
-		// Simulate form submission
-		console.log('Login form submitted:', { email, password });
-		setError('Login successful! (Front-end only)');
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5001';
+
+		// helper to call an endpoint and return parsed result with ok/status
+		const callLogin = (url) =>
+			fetch(url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, password }),
+			}).then((r) => r.json().then((data) => ({ ok: r.ok, status: r.status, data })));
+
+		// Try normal user login first; if it fails (401/403 or no token), try admin login endpoint
+		callLogin(`${baseUrl}/api/auth/login`)
+			.then(({ ok, status, data }) => {
+				if (ok && data && data.token) return { ok: true, data };
+				// if login failed, try admin login
+				return callLogin(`${baseUrl}/api/auth/admin/login`);
+			})
+			.then(({ ok, data, status }) => {
+				setLoading(false);
+				if (!ok) return setError((data && data.error) || `Login failed (${status})`);
+				localStorage.setItem('token', data.token);
+				// normalize role: admin endpoint may not set role
+				const role = data.role || (data.isAdmin ? 'admin' : data.role) || (data.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ? 'admin' : 'user');
+				localStorage.setItem('role', role || 'user');
+				localStorage.setItem('name', data.name || data.fullName || '');
+				if (role === 'admin') {
+					window.location.href = '/Admin/landing';
+				} else {
+					window.location.href = '/';
+				}
+			})
+			.catch((err) => {
+				setLoading(false);
+				setError(err.message || 'Login failed');
+			});
 	};
 
 	return (
@@ -174,9 +208,10 @@ const LoginForm = ({ toggleForm }) => {
 				</div>
 				<button
 					type="submit"
-					className="w-full px-6 py-3 text-white font-semibold rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-[1.02]"
+					disabled={loading}
+					className="w-full px-6 py-3 text-white font-semibold rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed"
 				>
-					Login
+					{loading ? 'Logging in...' : 'Login'}
 				</button>
 			</form>
 			<p className="text-sm text-center text-gray-500">
@@ -200,28 +235,48 @@ const RegistrationForm = ({ toggleForm }) => {
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState('');
+	const [loading, setLoading] = useState(false);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		setError('');
+		setLoading(true);
 
-		// Client-side validation
 		if (!name || !email || !password || !confirmPassword) {
 			setError('Please fill out all fields.');
+			setLoading(false);
 			return;
 		}
 		if (password !== confirmPassword) {
 			setError('Passwords do not match.');
+			setLoading(false);
 			return;
 		}
 		if (password.length < 6) {
 			setError('Password must be at least 6 characters long.');
+			setLoading(false);
 			return;
 		}
 
-		// Simulate form submission
-		console.log('Registration form submitted:', { name, email, password });
-		setError('Registration successful! (Front-end only)');
+		const baseUrl = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5001';
+		fetch(`${baseUrl}/api/auth/register`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ name, email, password }),
+		})
+			.then((r) => r.json().then((data) => ({ ok: r.ok, status: r.status, data })))
+			.then(({ ok, status, data }) => {
+				setLoading(false);
+				if (!ok) return setError(data.error || `Registration failed (${status})`);
+				localStorage.setItem('token', data.token);
+				localStorage.setItem('role', data.role || 'user');
+				localStorage.setItem('name', data.name || '');
+				window.location.href = '/';
+			})
+			.catch((err) => {
+				setLoading(false);
+				setError(err.message || 'Registration failed');
+			});
 	};
 
 	return (
@@ -292,9 +347,10 @@ const RegistrationForm = ({ toggleForm }) => {
 				</div>
 				<button
 					type="submit"
-					className="w-full px-6 py-3 text-white font-semibold rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-[1.02]"
+					disabled={loading}
+					className="w-full px-6 py-3 text-white font-semibold rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed"
 				>
-					Register
+					{loading ? 'Registering...' : 'Register'}
 				</button>
 			</form>
 			<p className="text-sm text-center text-gray-500">

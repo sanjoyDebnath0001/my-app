@@ -68,3 +68,39 @@ export const hotelData = [
 		amenities: ["Camel Rides", "Pool", "Buffet Dinner", "Cultural Shows"],
 	},
 ];
+
+/**
+ * Fetch hotel data from the app route /api/hotel and normalize to front-end shape.
+ * Falls back to the static `hotelData` on error.
+ * @param {AbortSignal} [signal]
+ */
+export async function fetchHotelData(signal) {
+	const url = '/api/hotel';
+	try {
+		const res = await fetch(url, { signal });
+		if (!res.ok) throw new Error(`HTTP ${res.status}`);
+		const data = await res.json();
+
+		// Normalize shape: accept array or { hotels: [...] }
+		let items = Array.isArray(data) ? data : data.hotels || data.data || (data.item ? [data.item] : null);
+		if (!items) items = [data];
+
+		const normalized = items.map((h) => ({
+			id: h.id || `hotel-${h.id}` || null,
+			title: h.title || h.name || '',
+			location: h.location || h.city || '',
+			price: h.price != null ? String(h.price) : (h.price_text || ''),
+			reviews: h.reviews || '',
+			rating: h.rating != null ? Number(h.rating) : null,
+			image: h.image || h.image_url || h.imageUrl || '',
+			description: h.description || '',
+			amenities: Array.isArray(h.amenities) ? h.amenities : (h.amenities ? [h.amenities] : []),
+		}));
+
+		return normalized;
+	} catch (err) {
+		// eslint-disable-next-line no-console
+		console.warn('fetchHotelData failed, falling back to static hotelData:', err.message || err);
+		return hotelData;
+	}
+}
